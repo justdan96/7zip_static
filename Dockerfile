@@ -4,38 +4,9 @@ MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 ENV TZ=Europe/London
 
 # install all the Linux build dependencies
-RUN apk add --no-cache alpine-sdk git patch wget clang make cmake build-base musl-dev
-RUN apk add --no-cache clang-dev gcc lld dpkg zip
-RUN apk add --no-cache zlib-static zlib-dev freetype-static freetype-dev bzip2-static bzip2-dev
-RUN apk add --no-cache libpng-static libpng-dev brotli-static brotli-dev brotli-libs
-RUN apk add --no-cache harfbuzz-static icu-static graphite2-static
-RUN apk add --no-cache pcre2-dev libxcb-static libxcb-dev libxrender-dev cups-dev mesa-dev
+RUN apk add --no-cache alpine-sdk git patch wget clang make build-base musl-dev
+RUN apk add --no-cache clang-dev gcc lld
 RUN apk add --no-cache llvm curl
-
-# ensure only Clang is used, not GCC
-RUN ln -sf /usr/bin/clang /usr/bin/cc
-RUN ln -sf /usr/bin/clang++ /usr/bin/c++
-
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 10
-RUN update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 10
-RUN update-alternatives --install /usr/bin/ld ld /usr/bin/lld 10
-
-RUN update-alternatives --auto cc
-RUN update-alternatives --auto c++
-RUN update-alternatives --auto ld
-
-# brotli-static installs with a suffix, we need to work around that
-RUN ln -sf /usr/lib/libbrotlicommon-static.a /usr/lib/libbrotlicommon.a
-RUN ln -sf /usr/lib/libbrotlidec-static.a /usr/lib/libbrotlidec.a
-RUN ln -sf /usr/lib/libbrotlienc-static.a /usr/lib/libbrotlienc.a
-
-# required for QML to build correctly
-RUN ln -sf /usr/bin/python3 /usr/bin/python
-
-# setup openSSL static and a few other dependencies
-RUN apk add --no-cache perl xz openssl-libs-static openssl-dev \
-	glib-static gettext-static 
-RUN apk add --no-cache meson m4 autoconf libtool
 
 # we will try to compile UASM on Linux
 RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.53 https://github.com/Terraspace/UASM.git
