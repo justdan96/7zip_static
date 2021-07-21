@@ -9,7 +9,7 @@
 
 You can build the `7zip_static` Docker container from source, during the container's build it will create the UASM and 7-Zip binaries as statically linked executables. 
 
-In the case of UASM it will compile the executable with Clang as `/usr/local/bin/uasm`. In the case of 7-Zip it will compile the executable with Clang as `/usr/local/bin/7zz_clang` and it will also compile the executable with GCC as `/usr/local/bin/7zz_gcc`.
+In the case of UASM it will compile the executable with Clang as `/usr/local/bin/uasm`. In the case of 7-Zip it will compile the executable with Clang as `/usr/local/bin/7zz`.
 
 To create the Docker container from scratch and copy the binaries to the current working directory, run the commands below:
 ```
