@@ -23,8 +23,8 @@ RUN rm -f /tmp/7z2103-src.7z
 
 # MUSL doesn't support pthread_attr_setaffinity_np so we have to disable affinity
 # we also have to amend the warnings so we don't trip over "disabled expansion of recursive macro"
-# we need a small patch to ensure UASM doesn't try to align the stack on this file - it causes segfaults
-RUN cd /usr/local/src/7z2103 && sed -i -e '1i\OPTION FRAMEPRESERVEFLAGS:ON\nOPTION PROLOGUE:NONE\nOPTION EPILOGUE:NONE' Asm/x86/LzFindOpt.asm
+# we need a small patch to ensure UASM doesn't try to align the stack in any assembler functions - this mimics expected asmc behaviour
+RUN cd /usr/local/src/7z2103 && sed -i -e '1i\OPTION FRAMEPRESERVEFLAGS:ON\nOPTION PROLOGUE:NONE\nOPTION EPILOGUE:NONE' Asm/x86/*.asm
 
 # create the Clang version
 RUN cd /usr/local/src/7z2103/CPP/7zip/Bundles/Alone2 && make CFLAGS_BASE_LIST="-c -static -D_7ZIP_AFFINITY_DISABLE=1" MY_ASM=uasm MY_ARCH="-static" CFLAGS_WARN_WALL="-Wall -Wextra" -f ../../cmpl_clang_x64.mak
