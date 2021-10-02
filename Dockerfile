@@ -4,16 +4,16 @@ MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 ENV TZ=Europe/London
 
 # install all the Linux build dependencies
-RUN apk add --no-cache alpine-sdk git patch wget make build-base musl-dev
-RUN apk add --no-cache gcc curl libarchive-tools
-RUN apk add --no-cache --repository http://nl.alpinelinux.org/alpine/v3.13/main/ clang=10.0.1-r0 clang-dev=10.0.1-r0 llvm10=10.0.1-r0
+RUN apk add --no-cache alpine-sdk git patch wget clang make build-base musl-dev
+RUN apk add --no-cache clang-dev gcc lld
+RUN apk add --no-cache llvm curl libarchive-tools
 
 # we will try to compile UASM on Linux
 RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.52 https://github.com/Terraspace/UASM.git
 COPY dbgcv.patch /usr/local/src/UASM/dbgcv.patch
 RUN cd /usr/local/src/UASM && patch < dbgcv.patch
 RUN sed -i.bak 's!#ifndef _TYPES_H_INCLUDED!#ifndef _TYPES_H_INCLUDED_!g' /usr/local/src/UASM/H/types.h
-RUN cd /usr/local/src/UASM && CFLAGS="-std=c99 -static" make CC=clang -f gccLinux64.mak
+RUN cd /usr/local/src/UASM && CFLAGS="-std=c99 -static" make CC="clang -fcommon" -f gccLinux64.mak
 RUN cp /usr/local/src/UASM/GccUnixR/uasm /usr/local/bin/uasm
 
 # we need to install 7zip to compile 7zip? As per jo620kix's suggestion we can use bsdtar instead
