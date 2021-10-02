@@ -13,7 +13,7 @@ RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.52 https:
 COPY dbgcv.patch /usr/local/src/UASM/dbgcv.patch
 RUN cd /usr/local/src/UASM && patch < dbgcv.patch
 RUN sed -i.bak 's!#ifndef _TYPES_H_INCLUDED!#ifndef _TYPES_H_INCLUDED_!g' /usr/local/src/UASM/H/types.h
-RUN cd /usr/local/src/UASM && CFLAGS="-std=c99 -static" make CC=clang -f gccLinux64.mak
+RUN cd /usr/local/src/UASM && CFLAGS="-std=c99 -static" make CC="clang -fcommon" -f gccLinux64.mak
 RUN cp /usr/local/src/UASM/GccUnixR/uasm /usr/local/bin/uasm
 
 # we need to install 7zip to compile 7zip? As per jo620kix's suggestion we can use bsdtar instead
