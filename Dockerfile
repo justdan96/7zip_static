@@ -4,9 +4,9 @@ MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 ENV TZ=Europe/London
 
 # install all the Linux build dependencies
-RUN apk add --no-cache alpine-sdk git patch wget clang make build-base musl-dev
-RUN apk add --no-cache clang-dev gcc lld
-RUN apk add --no-cache llvm curl libarchive-tools
+RUN apk add --no-cache alpine-sdk git patch wget make build-base musl-dev
+RUN apk add --no-cache gcc curl libarchive-tools
+RUN apk add --no-cache --repository http://nl.alpinelinux.org/alpine/v3.13/main/ clang=10.0.1-r0 clang-dev=10.0.1-r0 llvm10=10.0.1-r0
 
 # we will try to compile UASM on Linux
 RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.52 https://github.com/Terraspace/UASM.git
