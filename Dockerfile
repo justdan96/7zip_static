@@ -1,6 +1,8 @@
 FROM alpine:latest
 MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 
+# add variable VERSION for 7zip build number, The default value here is 2103
+ARG VERSION=2103
 ENV TZ=Europe/London
 
 # install all the Linux build dependencies
@@ -17,19 +19,19 @@ RUN cd /usr/local/src/UASM && CFLAGS="-std=c99 -static" make CC="clang -fcommon"
 RUN cp /usr/local/src/UASM/GccUnixR/uasm /usr/local/bin/uasm
 
 # we need to install 7zip to compile 7zip? As per jo620kix's suggestion we can use bsdtar instead
-RUN curl -o /tmp/7z2103-src.7z "https://www.7-zip.org/a/7z2103-src.7z"
-RUN mkdir /usr/local/src/7z2103 && cd /usr/local/src/7z2103 && bsdtar -xf /tmp/7z2103-src.7z
-RUN rm -f /tmp/7z2103-src.7z
+RUN curl -o /tmp/7z${VERSION}-src.7z "https://www.7-zip.org/a/7z${VERSION}-src.7z"
+RUN mkdir /usr/local/src/7z${VERSION} && cd /usr/local/src/7z${VERSION} && bsdtar -xf /tmp/7z${VERSION}-src.7z
+RUN rm -f /tmp/7z${VERSION}-src.7z
 
 # MUSL doesn't support pthread_attr_setaffinity_np so we have to disable affinity
 # we also have to amend the warnings so we don't trip over "disabled expansion of recursive macro"
 # we need a small patch to ensure UASM doesn't try to align the stack in any assembler functions - this mimics expected asmc behaviour
-RUN cd /usr/local/src/7z2103 && sed -i -e '1i\OPTION FRAMEPRESERVEFLAGS:ON\nOPTION PROLOGUE:NONE\nOPTION EPILOGUE:NONE' Asm/x86/*.asm
+RUN cd /usr/local/src/7z${VERSION} && sed -i -e '1i\OPTION FRAMEPRESERVEFLAGS:ON\nOPTION PROLOGUE:NONE\nOPTION EPILOGUE:NONE' Asm/x86/*.asm
 
 # create the Clang version
-RUN cd /usr/local/src/7z2103/CPP/7zip/Bundles/Alone2 && make CFLAGS_BASE_LIST="-c -static -D_7ZIP_AFFINITY_DISABLE=1" MY_ASM=uasm MY_ARCH="-static" CFLAGS_WARN_WALL="-Wall -Wextra" -f ../../cmpl_clang_x64.mak
-RUN mv /usr/local/src/7z2103/CPP/7zip/Bundles/Alone2/b/c_x64/7zz /usr/local/bin/7zz
+RUN cd /usr/local/src/7z${VERSION}/CPP/7zip/Bundles/Alone2 && make CFLAGS_BASE_LIST="-c -static -D_7ZIP_AFFINITY_DISABLE=1" MY_ASM=uasm MY_ARCH="-static" CFLAGS_WARN_WALL="-Wall -Wextra" -f ../../cmpl_clang_x64.mak
+RUN mv /usr/local/src/7z${VERSION}/CPP/7zip/Bundles/Alone2/b/c_x64/7zz /usr/local/bin/7zz
 
 # clean up the source files for our binaries
 RUN rm -rf /usr/local/src/UASM
-RUN rm -rf /usr/local/src/7z2103
+RUN rm -rf /usr/local/src/7z${VERSION}
