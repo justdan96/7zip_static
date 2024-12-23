@@ -27,6 +27,6 @@ Just run the commands below to build 7-zip as a static executable and copy the b
 ```
 git clone https://github.com/justdan96/7zip_static.git
 cd 7zip_static
-docker build --build-arg VERSION=2301 -t 7zip_static . 2>&1 | tee build.log
+docker build --build-arg VERSION=2409 -t 7zip_static . 2>&1 | tee build.log
 docker run -it --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
 ```
