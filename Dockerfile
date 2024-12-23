@@ -1,8 +1,8 @@
 FROM alpine:3.18
 MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 
-# add variable VERSION for 7zip build number, The default value here is 2301
-ARG VERSION=2301
+# add variable VERSION for 7zip build number, The default value here is 2409
+ARG VERSION=2409
 ENV TZ=Europe/London
 
 # install all the Linux build dependencies
@@ -16,8 +16,8 @@ RUN ln -s /usr/bin/clang-14 /usr/local/bin/clang
 RUN ln -s /usr/bin/clang++-14 /usr/local/bin/clang++
 
 # we will try to compile UASM on Linux
-RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.56.2 https://github.com/Terraspace/UASM.git
-RUN cd /usr/local/src/UASM && make CC="clang -fcommon -static -std=gnu99 -Wno-error=int-conversion" -f gccLinux64.mak
+RUN mkdir /usr/local/src && cd /usr/local/src && git clone --branch v2.57r https://github.com/Terraspace/UASM.git
+RUN cd /usr/local/src/UASM && make CC="clang -fcommon -static -std=gnu99 -Wno-error=int-conversion" -f Makefile-Linux-GCC-64.mak
 RUN cp /usr/local/src/UASM/GccUnixR/uasm /usr/local/bin/uasm
 
 # 7-zip source is now available in Tar XZ format
