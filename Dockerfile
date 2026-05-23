@@ -39,5 +39,5 @@ RUN mv /usr/local/src/7z${VERSION}/CPP/7zip/Bundles/Alone2/b/c_x64/7zz /usr/loca
 RUN cp /usr/local/bin/7zz /opt/7zz
 
 # clean up the source files for our binaries
-RUN rm -rf /usr/local/src/UASM
+RUN rm -rf /usr/local/src/asmc-${ASMC_VERSION}
 RUN rm -rf /usr/local/src/7z${VERSION}
